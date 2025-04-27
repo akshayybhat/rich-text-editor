@@ -9,9 +9,12 @@ const Editor = () => {
   const handleInput = (e) => {
     setContent(e.target.innerHTML);
   };
+  const handleBlur = () => {
+    saveToLocalStorage();
+  };
 
   const handleKeyDown = (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === '8') {
+    if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === '*') {
       e.preventDefault();
       execCommand('insertUnorderedList');
       return;
@@ -28,41 +31,45 @@ const Editor = () => {
         setSlashCommand((prev) => prev + e.key);
       }
     }
-
-    // When pressing Space, end formatting
-    if (e.key === ' ') {
-      execCommand('bold'); // toggle off bold
-    }
   };
 
   const handleSlashCommand = () => {
-    if (!editorRef.current) return;
+  if (!editorRef.current) return;
 
-    const selection = window.getSelection();
-    if (!selection.rangeCount) return;
+  const selection = window.getSelection();
+  if (!selection.rangeCount) return;
 
-    const range = selection.getRangeAt(0);
+  const range = selection.getRangeAt(0);
 
-    // Move 1 character extra for "/"
-    range.setStart(range.endContainer, range.endOffset - (slashCommand.length + 1));
-    range.deleteContents();
+  // Move back to include '/' and command text
+  range.setStart(range.endContainer, range.endOffset - (slashCommand.length + 1));
+  range.deleteContents();
 
-    if (slashCommand.toLowerCase() === 'dark') {
-      // Insert bold text manually
-      const boldElement = document.createElement('b');
-      boldElement.textContent = 'dark';
-      range.insertNode(boldElement);
+  // Insert bold text using whatever was typed after '/'
+  const boldElement = document.createElement('b');
+  boldElement.textContent = slashCommand;
+  range.insertNode(boldElement);
 
-      // Move cursor after the bold element
-      range.setStartAfter(boldElement);
-      range.setEndAfter(boldElement);
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
+  // Insert a normal text node (space)
+  const space = document.createTextNode(' ');
+  boldElement.after(space);
 
-    setIsTracking(false);
-    setSlashCommand('');
-  };
+  // Very important: Insert an empty normal span to "break" out of bold
+  const normalSpan = document.createElement('span');
+  normalSpan.innerHTML = '&#8203;'; // invisible zero-width space character
+  space.after(normalSpan);
+
+  // Move cursor after normal span
+  const newRange = document.createRange();
+  newRange.setStart(normalSpan, 1);
+  newRange.setEnd(normalSpan, 1);
+
+  selection.removeAllRanges();
+  selection.addRange(newRange);
+
+  setIsTracking(false);
+  setSlashCommand('');
+};
 
   return (
     <div
@@ -71,6 +78,7 @@ const Editor = () => {
       onInput={handleInput}
       onKeyDown={handleKeyDown}
       contentEditable
+      onBlur={handleBlur}
       role="textbox"
       aria-multiline="true"
       className="mt-4 p-4 min-h-[50vh] border rounded bg-white focus:outline-none"

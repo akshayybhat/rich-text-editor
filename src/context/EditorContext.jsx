@@ -1,13 +1,33 @@
-import { createContext, useContext, useRef, useState } from 'react';
+import { createContext, useContext, useRef, useState, useEffect } from 'react';
 
 const EditorContext = createContext();
+
 export const useEditor = () => useContext(EditorContext);
 
 export const EditorProvider = ({ children }) => {
   const editorRef = useRef(null);
   const [content, setContent] = useState('');
-  const [slashCommand, setSlashCommand] = useState('');
-  const [isCapturingSlash, setIsCapturingSlash] = useState(false);
+
+  const LOCAL_STORAGE_KEY = 'editor-content';
+
+  // Load content from localStorage on mount
+  useEffect(() => {
+    const savedContent = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (savedContent) {
+      setContent(savedContent);
+      if (editorRef.current) {
+        editorRef.current.innerHTML = savedContent;
+      }
+    }
+  }, []);
+
+  // ❌ Remove auto-save on every content change
+  // ❌ useEffect(() => { localStorage.setItem(LOCAL_STORAGE_KEY, content); }, [content]);
+
+  const saveToLocalStorage = () => {
+    if (!editorRef.current) return;
+    localStorage.setItem(LOCAL_STORAGE_KEY, editorRef.current.innerHTML);
+  };
 
   const execCommand = (command, value = null) => {
     if (!editorRef.current) return;
@@ -21,6 +41,7 @@ export const EditorProvider = ({ children }) => {
 
     const range = selection.getRangeAt(0);
     const container = selection.anchorNode?.parentNode;
+
     if (!container) return;
 
     if (container.closest('code')) {
@@ -47,33 +68,8 @@ export const EditorProvider = ({ children }) => {
     parent.removeChild(node);
   };
 
-  const startSlashCapture = () => {
-    setIsCapturingSlash(true);
-    setSlashCommand('');
-  };
-
-  const stopSlashCapture = () => {
-    setIsCapturingSlash(false);
-    setSlashCommand('');
-  };
-
-  const runSlashCommand = () => {
-    const command = slashCommand.toLowerCase().trim();
-    if (command === 'bold') {
-      execCommand('bold');
-    } else if (command === 'italic') {
-      execCommand('italic');
-    } else if (command === 'ul') {
-      execCommand('insertUnorderedList');
-    }
-    stopSlashCapture();
-  };
-
   return (
-    <EditorContext.Provider value={{
-      editorRef, content, setContent, execCommand, toggleCodeTag,
-      startSlashCapture, isCapturingSlash, setSlashCommand, runSlashCommand
-    }}>
+    <EditorContext.Provider value={{ editorRef, content, setContent, execCommand, toggleCodeTag, saveToLocalStorage }}>
       {children}
     </EditorContext.Provider>
   );
