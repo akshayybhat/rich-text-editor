@@ -54,7 +54,7 @@ const Editor = () => {
   const space = document.createTextNode(' ');
   boldElement.after(space);
 
-  // Very important: Insert an empty normal span to "break" out of bold
+ //Insert an empty normal span to "break" out of bold
   const normalSpan = document.createElement('span');
   normalSpan.innerHTML = '&#8203;'; // invisible zero-width space character
   space.after(normalSpan);

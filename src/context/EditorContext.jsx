@@ -21,8 +21,6 @@ export const EditorProvider = ({ children }) => {
     }
   }, []);
 
-  // ❌ Remove auto-save on every content change
-  // ❌ useEffect(() => { localStorage.setItem(LOCAL_STORAGE_KEY, content); }, [content]);
 
   const saveToLocalStorage = () => {
     if (!editorRef.current) return;
