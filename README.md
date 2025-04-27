@@ -1,5 +1,7 @@
 # Text Editing Tool
 
+https://rich-text-editor-iota.vercel.app/
+
 A lightweight, fully functional **Text Editor** built with React —  
 without using any external WYSIWYG libraries.  
 
