@@ -1,4 +1,4 @@
-# Rich Text Editor
+# Text Editing Tool
 
 A lightweight, fully functional **Text Editor** built with React —  
 without using any external WYSIWYG libraries.  
