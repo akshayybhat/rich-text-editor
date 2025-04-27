@@ -15,12 +15,10 @@ const Editor = () => {
       contentEditable
       role="textbox"
       aria-multiline="true"
-      className="mt-4 p-4 min-h-[50vh] border rounded bg-white focus:outline-none
-                space-y-4"
+      className="mt-4 p-4 min-h-[50vh] border rounded bg-white focus:outline-none overflow-y-auto"
       suppressContentEditableWarning={true}
       spellCheck={true}
-    >
-    </div>
+    />
   );
 };
 

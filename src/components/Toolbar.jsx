@@ -3,7 +3,7 @@ import { useEditor } from '../context/EditorContext';
 import { toolbarButtons } from '../utils/toolbarConfig';
 
 const Toolbar = () => {
-  const { execCommand, toggleCodeTag, activeFormats } = useEditor();
+  const { execCommand, toggleCodeTag } = useEditor();
 
   const handleButtonClick = (button) => {
     if (button.custom) {
@@ -13,17 +13,23 @@ const Toolbar = () => {
     }
   };
 
-  const isActive = (id) => activeFormats.includes(id);
+  const handleFormatBlock = (e) => {
+    execCommand('formatBlock', e.target.value);
+    setTimeout(() => {
+      if (document.activeElement !== document.getElementById('text-input')) {
+        document.getElementById('text-input')?.focus();
+      }
+    }, 0);
+  };
 
   return (
-    <div className="flex flex-wrap items-center gap-3 bg-gray-100 p-2 rounded-md">
+    <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3 bg-gray-100 p-2 rounded-md overflow-x-auto">
       {toolbarButtons.map((button) => (
         <button
           key={button.id}
           id={button.id}
           onClick={() => handleButtonClick(button)}
-          className={`h-8 w-8 flex items-center justify-center rounded hover:bg-gray-300
-            ${isActive(button.id) ? 'border-2 border-blue-500 bg-blue-100' : ''}`}
+          className="h-8 w-8 flex items-center justify-center rounded hover:bg-gray-300 flex-shrink-0"
           aria-label={button.id}
           type="button"
         >
@@ -31,11 +37,11 @@ const Toolbar = () => {
         </button>
       ))}
 
-      {/* Headings */}
+      {/* Advanced options */}
       <select
         id="formatBlock"
-        onChange={(e) => execCommand('formatBlock', e.target.value)}
-        className="p-1 border rounded text-sm"
+        onChange={handleFormatBlock}
+        className="p-1 border rounded text-sm flex-shrink-0"
       >
         <option value="H1">H1</option>
         <option value="H2">H2</option>
@@ -46,8 +52,8 @@ const Toolbar = () => {
       </select>
 
       {/* Font color */}
-      <div className="flex items-center gap-1">
-        <label htmlFor="foreColor" className="text-xs">Font Color</label>
+      <label className="flex items-center gap-1 text-sm flex-shrink-0">
+        Font
         <input
           type="color"
           id="foreColor"
@@ -55,11 +61,11 @@ const Toolbar = () => {
           onChange={(e) => execCommand('foreColor', e.target.value)}
           aria-label="Font Color"
         />
-      </div>
+      </label>
 
       {/* Background color */}
-      <div className="flex items-center gap-1">
-        <label htmlFor="backColor" className="text-xs">Background</label>
+      <label className="flex items-center gap-1 text-sm flex-shrink-0">
+        Background
         <input
           type="color"
           id="backColor"
@@ -67,7 +73,7 @@ const Toolbar = () => {
           onChange={(e) => execCommand('backColor', e.target.value)}
           aria-label="Background Color"
         />
-      </div>
+      </label>
     </div>
   );
 };

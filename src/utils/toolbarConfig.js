@@ -10,7 +10,7 @@ export const toolbarButtons = [
   { id: "italic", icon: faItalic, command: "italic" },
   { id: "underline", icon: faUnderline, command: "underline" },
   { id: "strikethrough", icon: faStrikethrough, command: "strikethrough" },
-  { id: "code", icon: faCode, custom: true }, // Special behavior
+  { id: "code", icon: faCode, custom: true },
   { id: "superscript", icon: faSuperscript, command: "superscript" },
   { id: "subscript", icon: faSubscript, command: "subscript" },
   { id: "insertOrderedList", icon: faListOl, command: "insertOrderedList" },
