@@ -32,11 +32,9 @@ without using any external WYSIWYG libraries.
 
 ##  Keyboard Commands
 
-| Shortcut | Action |
-|:---|:---|
-| `Cmd + Shift + *` | Insert bullet list (`<ul>`) |
-| `/word` + `Enter` | Insert "word" in bold (without slash) |
-| `Tab` / `Shift+Tab` | Navigate Toolbar buttons |
+- **Cmd + Shift + \*** → Insert an unordered list (`<ul>`)
+- **/word + Enter** → Insert "word" in bold (the slash will be removed automatically)
+- **Tab / Shift + Tab** → Navigate between Toolbar buttons
 
 ---
 
