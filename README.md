@@ -31,6 +31,19 @@ without using any external WYSIWYG libraries.
 - **Context API** (for shared editor state)
 
 ---
+## Architecture Decisions
+
+- **Component Structure:**
+  - `App.jsx` — Sets up layout and context provider.
+  - `EditorContext.jsx` — Manages editor state (content, ref, commands).
+  - `Toolbar.jsx` — Provides formatting buttons and dropdowns.
+  - `Editor.jsx` — The editable text area (`contentEditable`) handling input and shortcuts.
+
+- **No rich text libraries used** to meet constraints.
+- **Direct DOM manipulation** (`document.execCommand`, `Range`, `Selection`) used carefully to handle formatting.
+- **React Context API** provides clean, global access to editor operations without prop drilling.
+
+---
 
 ##  Keyboard Commands
 
